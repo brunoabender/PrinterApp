@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "ouPsZQkEmbI=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\bruno\\source\\repos\\Printer\\PrinterApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\bruno\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.21.0\\microsoft.visualstudio.azure.containers.tools.targets.1.21.0.nupkg.sha512"
+  ],
+  "logs": []
+}
