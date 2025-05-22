@@ -1,9 +1,7 @@
-using Microsoft.Extensions.Options;
-using PrinterApp.Configuration;
 using PrinterApp.Core;
 namespace PrinterApp.Impl
 {
-    public class Printer(IQueue queue, long millisecondsPerPage)
+    public class Printer(IQueue queue, long millisecondsPerPage, CancellationToken token)
     {
         private readonly IQueue Queue = queue;
         private readonly long MillisecondsPerPage = millisecondsPerPage;
@@ -21,7 +19,7 @@ namespace PrinterApp.Impl
 
                 try
                 {
-                    job = Queue.Dequeue(CancellationTokenSource.Token);
+                    job = Queue.Dequeue(token);
                 }
                 catch (OperationCanceledException)
                 {

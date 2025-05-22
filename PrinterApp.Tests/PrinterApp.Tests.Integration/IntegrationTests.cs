@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Text;
 using Shouldly;
-using Xunit;
 
 namespace PrinterApp.Tests.Integration;
 
@@ -97,6 +96,7 @@ public class AppExecutableTests
         {
             ["AppConfiguration__QueueCapacity"] = "10",
             ["AppConfiguration__NumberOfProducers"] = "1",
+            ["AppConfiguration__MillisecondsPerPage"] = "50",
             ["AppConfiguration__RandomizerSettings__MinJobCount"] = "10",
             ["AppConfiguration__RandomizerSettings__MaxJobCount"] = "10",
             ["AppConfiguration__RandomizerSettings__MinPageCount"] = "1",
@@ -108,7 +108,7 @@ public class AppExecutableTests
         var error = await process.StandardError.ReadToEndAsync();
         process.WaitForExit();
         process.CancelOutputRead();
-        await Task.Delay(100);
+        await Task.Delay(1000);
 
         var output = outputBuilder.ToString();
         output.ShouldContain("[System] Halt solicitado", Case.Insensitive);
@@ -123,6 +123,7 @@ public class AppExecutableTests
         {
             ["AppConfiguration__QueueCapacity"] = "5",
             ["AppConfiguration__NumberOfProducers"] = "1",
+            ["AppConfiguration__MillisecondsPerPage"] = "50",
             ["AppConfiguration__RandomizerSettings__MinJobCount"] = "20",
             ["AppConfiguration__RandomizerSettings__MaxJobCount"] = "20",
             ["AppConfiguration__RandomizerSettings__MinPageCount"] = "1",
@@ -140,6 +141,36 @@ public class AppExecutableTests
 
         output.ShouldContain("Cancelado com segurança", Case.Insensitive);
         output.ShouldContain("[System] Aplicação finalizada");
+        error.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task App_ShouldLogBothProducersAndPrinterOutput()
+    {
+        var (process, outputBuilder) = StartAppWithConfig(new()
+        {
+            ["AppConfiguration__QueueCapacity"] = "5",
+            ["AppConfiguration__NumberOfProducers"] = "2",
+            ["AppConfiguration__MillisecondsPerPage"] = "50",
+            ["AppConfiguration__RandomizerSettings__MinJobCount"] = "1",
+            ["AppConfiguration__RandomizerSettings__MaxJobCount"] = "3",
+            ["AppConfiguration__RandomizerSettings__MinPageCount"] = "1",
+            ["AppConfiguration__RandomizerSettings__MaxPageCount"] = "2",
+            ["AppConfiguration__RandomizerSettings__MinDelay"] = "10",
+            ["AppConfiguration__RandomizerSettings__MaxDelay"] = "100",
+        });
+
+        var error = await process.StandardError.ReadToEndAsync();
+        process.WaitForExit();
+        process.CancelOutputRead();
+        await Task.Delay(100);
+
+        var output = outputBuilder.ToString();
+
+        output.ShouldContain("[Producer 1]", Case.Insensitive);
+        output.ShouldContain("[Producer 2]", Case.Insensitive);
+        output.ShouldContain("[Printer] Imprimindo", Case.Insensitive);
+        output.ShouldContain("[System] Aplicação finalizada", Case.Insensitive);
         error.ShouldBeEmpty();
     }
 
@@ -195,34 +226,4 @@ public class AppExecutableTests
 
         return (process, outputBuilder);
     }
-
-    [Fact]
-    public async Task App_ShouldLogBothProducersAndPrinterOutput()
-    {
-        var (process, outputBuilder) = StartAppWithConfig(new()
-        {
-            ["AppConfiguration__QueueCapacity"] = "5",
-            ["AppConfiguration__NumberOfProducers"] = "2",
-            ["AppConfiguration__RandomizerSettings__MinJobCount"] = "1",
-            ["AppConfiguration__RandomizerSettings__MaxJobCount"] = "3",
-            ["AppConfiguration__RandomizerSettings__MinPageCount"] = "1",
-            ["AppConfiguration__RandomizerSettings__MaxPageCount"] = "2",
-            ["AppConfiguration__RandomizerSettings__MinDelay"] = "10",
-            ["AppConfiguration__RandomizerSettings__MaxDelay"] = "100",
-        });
-
-        var error = await process.StandardError.ReadToEndAsync();
-        process.WaitForExit();
-        process.CancelOutputRead();
-        await Task.Delay(100);
-
-        var output = outputBuilder.ToString();
-
-        output.ShouldContain("[Producer 1]", Case.Insensitive);
-        output.ShouldContain("[Producer 2]", Case.Insensitive);
-        output.ShouldContain("[Printer] Imprimindo", Case.Insensitive);
-        output.ShouldContain("[System] Aplicação finalizada", Case.Insensitive);
-        error.ShouldBeEmpty();
-    }
-
 }
