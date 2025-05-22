@@ -112,6 +112,15 @@ docker compose run printer
 ```
 
 ---
+## 📦 Deploy (Não totalmente implementado)
+
+Coloquei um arquivo de yaml para fazer um deploy, mas é somente um começo. 
+
+---
+
+docker compose -f docker-compose.deploy.yml up --build -d
+
+---
 
 ## 📄 Licença
 
