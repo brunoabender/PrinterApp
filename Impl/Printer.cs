@@ -3,48 +3,47 @@ namespace PrinterApp.Impl
 {
     public class Printer(IQueue queue, long millisecondsPerPage, CancellationToken token)
     {
-        private readonly IQueue Queue = queue;
-        private readonly long MillisecondsPerPage = millisecondsPerPage;
-        private readonly CancellationTokenSource CancellationTokenSource = new();
-        private volatile bool HaltRequested = false;
+        private readonly IQueue _queue = queue;
+        private readonly long _millisecondsPerPage = millisecondsPerPage;
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
+        private volatile bool _haltRequested = false;
 
         public async Task RunAsync()
         {
-            while (!HaltRequested || !Queue.IsEmpty)
+            while (!_haltRequested || !_queue.IsEmpty)
             {
-                if (CancellationTokenSource.IsCancellationRequested && Queue.IsEmpty)
+                if (_cancellationTokenSource.IsCancellationRequested && _queue.IsEmpty)
                     break;
 
                 PrintJob? job;
 
                 try
                 {
-                    job = Queue.Dequeue(token);
+                    job = _queue.Dequeue(token);
                 }
                 catch (OperationCanceledException)
                 {
                     break;
                 }
 
-                if (!CancellationTokenSource.IsCancellationRequested)
+                if (!_cancellationTokenSource.IsCancellationRequested)
                 {
                     Console.WriteLine($"[Printer] Imprimindo: {job.Name} ({job.Pages} páginas)");
 
-                    int delay = (int)(job.Pages * MillisecondsPerPage);
+                    int delay = (int)(job.Pages * _millisecondsPerPage);
                     await Task.Delay(delay);
 
                     Console.WriteLine($"[Printer] Terminado com sucesso: {job.Name} com tempo de impressão em {delay}");
                 }
             }
 
-            Console.WriteLine($"[Printer] Parada de execução com sucesso. Itens na fila: {Queue.Count}");
+            Console.WriteLine($"[Printer] Parada de execução com sucesso. Itens na fila: {_queue.Count}");
         }
-
 
         public void Halt()
         {
-            HaltRequested = true;
-            CancellationTokenSource.Cancel();
+            _haltRequested = true;
+            _cancellationTokenSource.Cancel();
         }
     }
 }

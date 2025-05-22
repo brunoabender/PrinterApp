@@ -4,29 +4,31 @@ using PrinterApp.Impl;
 
 namespace PrinterApp.Core;
 
-public class AppBootstrapper(IOptions<AppConfiguration> options)
+public class ApplicationBootstrapper(IOptions<ApplicationConfiguration> options)
 {
-    private readonly AppConfiguration Config = options.Value;
+    private readonly ApplicationConfiguration _config = options.Value;
 
     public async Task RunAsync()
     {
-        var queue = new CircularQueue(Config.QueueCapacity);
+        var queue = new CircularQueue(_config.QueueCapacity);
         var cancellationTokenSource = new CancellationTokenSource();
-        var printer = new Printer(queue, Config.MillisecondsPerPage, cancellationTokenSource.Token);
+        var printer = new Printer(queue, _config.MillisecondsPerPage, cancellationTokenSource.Token);
 
         var producers = new List<Task>();
 
-        for (int i = 0; i < Config.NumberOfProducers; i++)
+        for (int i = 0; i < _config.NumberOfProducers; i++)
         {
-            var producer = new Producer(queue, $"Producer {i + 1}", Config.Randomizer);
+            var producer = new Producer(queue, $"Producer {i + 1}", _config);
             producers.Add(producer.RunAsync(cancellationTokenSource.Token));
         }
 
+        Console.Out.Flush();
+
         var printerTask = printer.RunAsync();
 
-        Console.WriteLine("Digite ENTER para parar a execução.");
         await Task.Run(() =>
         {
+            Console.WriteLine("Digite ENTER para parar a execução.");
             Console.ReadLine();
             Console.WriteLine("[System] Halt solicitado.");
             printer.Halt();

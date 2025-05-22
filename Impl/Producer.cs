@@ -1,12 +1,13 @@
+using PrinterApp.Configuration;
 using PrinterApp.Core;
 using PrinterApp.Util;
 
 namespace PrinterApp.Impl
 {
-    public class Producer(IQueue queue, string name, Randomizer random)
+    public class Producer(IQueue queue, string name, ApplicationConfiguration applicationConfiguration)
     {
         private readonly IQueue Queue = queue;
-        private readonly Randomizer Random = random;
+        private readonly JobProfileExecutor Random = new(applicationConfiguration);
         private readonly string Name = name;
 
         public async Task RunAsync(CancellationToken token)
@@ -16,7 +17,7 @@ namespace PrinterApp.Impl
                 int jobs = Random.NextJobCount();
                 for (int i = 0; i < jobs && !token.IsCancellationRequested; i++)
                 {
-                    var job = new PrintJob(RandomFileName.GenerateFileName(), Random.NextPageCount());
+                    var job = new PrintJob(FileNameGenerator.Generate(), Random.NextPageCount());
                     try
                     {
                         Queue.Enqueue(job);

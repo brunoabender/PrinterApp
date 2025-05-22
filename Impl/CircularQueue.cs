@@ -4,45 +4,45 @@ namespace PrinterApp.Impl
 {
     public class CircularQueue(int capacity) : IQueue
     {
-        private readonly Queue<PrintJob> Queue = new();
-        private readonly int Capacity = capacity;
-        private readonly object Lock = new();
-        private readonly int TimeToCheck = 100;
+        private readonly Queue<PrintJob> _queue = new();
+        private readonly int _capacity = capacity;
+        private readonly object _lock = new();
+        private readonly int _timeToCheck = 100;
 
         public bool IsEmpty
         {
             get
             {
-                lock (Lock) return Queue.Count == 0;
+                lock (_lock) return _queue.Count == 0;
             }
         }
 
         public void Enqueue(PrintJob job)
         {
-            lock (Lock)
+            lock (_lock)
             {
-                if (Queue.Count >= Capacity)
+                if (_queue.Count >= _capacity)
                     throw new FullQueueException($"A fila de impressão está cheia. Não foi possivel colocar {job.Name}");
 
-                Queue.Enqueue(job);
-                Monitor.PulseAll(Lock);
+                _queue.Enqueue(job);
+                Monitor.PulseAll(_lock);
             }
         }
 
         public PrintJob Dequeue(CancellationToken token)
         {
-            lock (Lock)
+            lock (_lock)
             {
-                while (Queue.Count == 0)
+                while (_queue.Count == 0)
                 {
                     if (token.IsCancellationRequested)
                         throw new OperationCanceledException();
 
-                    Monitor.Wait(Lock, TimeSpan.FromMilliseconds(TimeToCheck));
+                    Monitor.Wait(_lock, TimeSpan.FromMilliseconds(_timeToCheck));
                 }
 
-                var job = Queue.Dequeue();
-                Monitor.PulseAll(Lock);
+                var job = _queue.Dequeue();
+                Monitor.PulseAll(_lock);
                 return job;
             }
         }
@@ -51,7 +51,7 @@ namespace PrinterApp.Impl
         {
             get
             {
-                lock (Lock) return Queue.Count;
+                lock (_lock) return _queue.Count;
             }
         }
     }
