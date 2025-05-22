@@ -87,9 +87,9 @@ docker compose run printer
 
 | Variável                                     | Exemplo |
 |----------------------------------------------|---------|
-| `AppConfiguration__QueueCapacity`            | 1000    |
-| `AppConfiguration__NumberOfProducers`        | 4       |
-| `AppConfiguration__MillisecondsPerPage`      | 250     |
+| `AppConfiguration__QueueCapacity`            | 10    |
+| `AppConfiguration__NumberOfProducers`        | 2      |
+| `AppConfiguration__MillisecondsPerPage`      | 50     |
 | `AppConfiguration__RandomizerSettings__MinJobCount` | 200 |
 | `AppConfiguration__RandomizerSettings__MaxJobCount` | 400 |
 | `AppConfiguration__RandomizerSettings__MinPageCount` | 300 |

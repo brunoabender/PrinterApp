@@ -16,9 +16,9 @@ ENV LC_ALL C.UTF-8
 COPY --from=build /app/publish .
 
 # Variáveis de ambiente padrão
-ENV AppConfiguration__QueueCapacity=4000 \
-    AppConfiguration__NumberOfProducers=4 \
-    AppConfiguration__MillisecondsPerPage=250 \
+ENV AppConfiguration__QueueCapacity=10 \
+    AppConfiguration__NumberOfProducers=2 \
+    AppConfiguration__MillisecondsPerPage=50 \
     AppConfiguration__RandomizerSettings__MinJobCount=200 \
     AppConfiguration__RandomizerSettings__MaxJobCount=400 \
     AppConfiguration__RandomizerSettings__MinPageCount=300 \

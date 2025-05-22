@@ -14,9 +14,9 @@
       "commandName": "Docker",
       "launchBrowser": false,
       "environmentVariables": {
-        "AppConfiguration__QueueCapacity": "1000",
-        "AppConfiguration__NumberOfProducers": "4",
-        "AppConfiguration__MillisecondsPerPage": "100000000",
+        "AppConfiguration__QueueCapacity": "10",
+        "AppConfiguration__NumberOfProducers": "2",
+        "AppConfiguration__MillisecondsPerPage": "50",
         "AppConfiguration__RandomizerSettings__MinJobCount": "5",
         "AppConfiguration__RandomizerSettings__MaxJobCount": "10",
         "AppConfiguration__RandomizerSettings__MinPageCount": "1",
