@@ -17,9 +17,16 @@ namespace PrinterApp.Impl
                 for (int i = 0; i < jobs && !token.IsCancellationRequested; i++)
                 {
                     var job = new PrintJob(RandomFileName.GenerateFileName(), random.NextPageCount());
-                    Queue.Enqueue(job);
-                    Console.WriteLine($"[{Name}] Produzindo: {job.Name} - com total de {job.Pages} página(s)");
-                    await Task.Delay(random.NextDelay(), token);
+                    try
+                    {
+                        Queue.Enqueue(job);
+                        Console.WriteLine($"[{Name}] Produzindo: {job.Name} - com total de {job.Pages} página(s)");
+                        await Task.Delay(random.NextDelay(), token);
+                    }
+                    catch (FullQueueException ex)
+                    {
+                        Console.WriteLine($"[{Name}] Erro: {ex.Message}");
+                    }
                 }
             }
             catch (OperationCanceledException)
