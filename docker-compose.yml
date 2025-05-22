@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  printer:
+    image: printer-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: printer-app

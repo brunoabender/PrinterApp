@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  test:
+    image: printer-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["dotnet", "test", "--no-build", "--logger:trx"]
+    stdin_open: false
+    tty: false
+
+  printer:
+    image: printer-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - test
+    environment:
+      AppConfiguration__QueueCapacity: 2000
+      AppConfiguration__NumberOfProducers: 3
+      AppConfiguration__MillisecondsPerPage: 100
+      AppConfiguration__RandomizerSettings__MinJobCount: 10
+      AppConfiguration__RandomizerSettings__MaxJobCount: 20
+      AppConfiguration__RandomizerSettings__MinPageCount: 30
+      AppConfiguration__RandomizerSettings__MaxPageCount: 100
+      AppConfiguration__RandomizerSettings__MinDelay: 200
+      AppConfiguration__RandomizerSettings__MaxDelay: 600
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
