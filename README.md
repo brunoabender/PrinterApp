@@ -32,10 +32,10 @@ Meu objetivo foi entregar uma solução compacta, funcional, extensível e fáci
 
 ---
 
-## 🚀 Executando localmente
+## 🚀 Executando localmente (Por Favor, entrar na pasta que está o projeto)
 
 ```bash
-dotnet run --project PrinterApp
+docker compose run printer
 ```
 
 Você verá:
@@ -50,13 +50,13 @@ Pressione ENTER quando desejar parar os producers e o printer. Ele vai tentar en
 
 ## 🐳 Rodando com Docker
 
-### ✅ Build da imagem
+### ✅ Build da imagem (Por Favor, entrar na pasta que está o projeto)
 
 ```bash
 docker build -t printer-app -f Dockerfile.UTF8 .
 ```
 
-### ▶️ Executar interativamente
+### ▶️ Executar interativamente (Por Favor, entrar na pasta que está o projeto)
 
 ```bash
 docker run -it printer-app
@@ -66,7 +66,7 @@ Isso mantém o console aberto para que você possa pressionar ENTER e encerrar o
 
 ---
 
-## 🐳 Usando Docker Compose
+## 🐳 Usando Docker Compose (Por Favor, entrar na pasta que está o projeto)
 
 ### Arquivos necessários:
 
@@ -99,6 +99,8 @@ docker compose run printer
 
 Você pode sobrescrever essas variáveis com `-e` no `docker run`, ou no `docker-compose.override.yml`.
 
+Embora não estivesse na premissa do projeto, tornar o sistema configurável pareceu uma evolução natural. Por isso, implementei essa capacidade no projeto para avaliar seu comportamento em diferentess cenários.
+
 ---
 
 ## 📦 Build clean + execução
@@ -110,20 +112,6 @@ docker compose run printer
 ```
 
 ---
-
-## ✅ Logs esperados
-
-```
-[Producer 1] Produzindo: Arquivo_abcd12.txt - com total de 800 página(s)
-[Printer] Imprimindo: Arquivo_abcd12.txt (800 páginas)
-Digite ENTER para parar a execução.
-[System] Halt solicitado.
-...
-[Printer] Parada de execução com sucesso. Itens na fila: 0
-```
-
----
-
 
 ## 📄 Licença
 
