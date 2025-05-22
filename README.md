@@ -53,7 +53,7 @@ Pressione ENTER quando desejar parar os producers e o printer. Ele vai tentar en
 ### ✅ Build da imagem (Por Favor, entrar na pasta que está o projeto)
 
 ```bash
-docker build -t printer-app -f Dockerfile.UTF8 .
+docker build -t printer-app -f Dockerfile .
 ```
 
 ### ▶️ Executar interativamente (Por Favor, entrar na pasta que está o projeto)
