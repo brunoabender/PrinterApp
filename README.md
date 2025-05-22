@@ -116,11 +116,9 @@ docker compose run printer
 
 Coloquei um arquivo de yaml para fazer um deploy, mas é somente um começo. 
 
----
-
+```bash
 docker compose -f docker-compose.deploy.yml up --build -d
-
----
+```
 
 ## 📄 Licença
 
