@@ -11,7 +11,7 @@ public class AppBootstrapper(IOptions<AppConfiguration> options)
     public async Task RunAsync()
     {
         var queue = new CircularQueue(config.QueueCapacity);
-        var printer = new Printer(queue);
+        var printer = new Printer(queue, config.MillisecondsPerPage);
         var cancellationTokenSource = new CancellationTokenSource();
 
         var producers = new List<Task>();

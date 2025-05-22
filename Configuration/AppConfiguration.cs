@@ -8,5 +8,7 @@ namespace PrinterApp.Configuration
         public int NumberOfProducers { get; set; } = 2;
         public RandomizerConfiguration RandomizerSettings { get; set; } = new();
         public Randomizer Randomizer => new(RandomizerSettings);
+
+        public long MillisecondsPerPage = 50;
     }
 }

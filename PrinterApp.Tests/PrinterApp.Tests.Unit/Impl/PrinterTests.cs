@@ -73,7 +73,7 @@ namespace PrinterApp.Tests.Unit.Impl
             queue.Enqueue(new PrintJob("Doc1", 1));
             queue.Enqueue(new PrintJob("Doc2", 2));
 
-            var printer = new Printer(queue);
+            var printer = new Printer(queue, 250);
             var task = printer.RunAsync();
             printer.Halt();
             await task;
@@ -87,7 +87,7 @@ namespace PrinterApp.Tests.Unit.Impl
             var queue = new FakeQueue();
             queue.Enqueue(new PrintJob("Job1", 10));
 
-            var printer = new Printer(queue);
+            var printer = new Printer(queue, 250);
             var task = printer.RunAsync();
             printer.Halt();
             await task;
@@ -99,7 +99,7 @@ namespace PrinterApp.Tests.Unit.Impl
         public async Task Printer_ShouldNotThrow_WhenQueueHasItemAndHaltRequested()
         {
             var queue = new FakeQueue();
-            var printer = new Printer(queue);
+            var printer = new Printer(queue, 250);
 
             queue.Enqueue(new PrintJob("Test", 1));
 

@@ -1,10 +1,12 @@
+using Microsoft.Extensions.Options;
+using PrinterApp.Configuration;
 using PrinterApp.Core;
 namespace PrinterApp.Impl
 {
-    public class Printer(IQueue queue)
+    public class Printer(IQueue queue, long millisecondsPerPage)
     {
         private readonly IQueue Queue = queue;
-        private readonly long MillisecondsPerPage = 50;
+        private readonly long MillisecondsPerPage = millisecondsPerPage;
         private readonly CancellationTokenSource CancellationTokenSource = new();
         private volatile bool HaltRequested = false;
 
