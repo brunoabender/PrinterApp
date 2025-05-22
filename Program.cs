@@ -1,37 +1,28 @@
-using PrinterApp.Impl;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using PrinterApp.Configuration;
+using PrinterApp.Core;
 
-var queue = new CircularQueue(10);
-var printer = new Printer(queue);
-var cancellationTokenSource = new CancellationTokenSource();
-
-var firstProducer = new Producer(queue, "Primeiro Producer");
-var secoundProducer = new Producer(queue, "Segundo Producer");
-
-var firstProducerResult = firstProducer.RunAsync(cancellationTokenSource.Token);
-var secondProducerResult = secoundProducer.RunAsync(cancellationTokenSource.Token);
-var printerTask = printer.RunAsync();
-
-var haltSource = new TaskCompletionSource();
-var inputTask = MonitorUserInputAsync(haltSource);
-
-await Task.WhenAny(Task.WhenAll(firstProducerResult, secondProducerResult), haltSource.Task);
-
-if (haltSource.Task.IsCompleted)
+public class Program
 {
-    cancellationTokenSource.Cancel();       
-    printer.Halt();     
-}
-else
-    Console.WriteLine("[System] Producers concluídos. Aguardando a impressora esvaziar a fila...");
+    private static async Task Main(string[] args)
+    {
+        var host = Host.CreateDefaultBuilder(args)
+        .ConfigureAppConfiguration((context, config) =>
+        {
+            config.AddJsonFile("appsettings.json", optional: true)
+                    .AddEnvironmentVariables()
+                    .AddCommandLine(args);
+        })
+    .ConfigureServices((context, services) =>
+    {
+        services.Configure<AppConfiguration>(context.Configuration.GetSection("AppConfiguration"));
+        services.AddSingleton<AppBootstrapper>();
+    })
+    .Build();
 
-await printerTask;
-
-Console.WriteLine($"[System] Encerrado com sucesso. Itens restantes na fila: {queue.Count}");
-
-static async Task MonitorUserInputAsync(TaskCompletionSource haltSignal)
-{
-    Console.WriteLine("Digite ENTER a qualquer momento para parar a execução.");
-    await Task.Run(() => Console.ReadLine());
-    Console.WriteLine("[System] Halt solicitado pelo usuário.");
-    haltSignal.TrySetResult();
+        var app = host.Services.GetRequiredService<AppBootstrapper>();
+        await app.RunAsync();
+    }
 }
